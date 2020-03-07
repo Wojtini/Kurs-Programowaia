@@ -1,7 +1,7 @@
 public class Test {
     public static void main(String args[]) {
         for(int i=0;i<args.length;i++){
-            try { 
+            try {
                 int n=Integer.parseInt(args[i]);
                 try{
                     System.out.println(n + " - " + ArabRzym.arab2rzym(n));
@@ -20,7 +20,7 @@ public class Test {
             }
         }
     }
-    
+
     public static boolean czyRzymskie(String a){
         for(int i=0;i<a.length();i++){
             if(findLetter(ArabRzym.Rzymskie,Character.toString(a.charAt(i)))==-1){
@@ -66,10 +66,11 @@ public class Test {
                     pom2 = Character.toString(rzym.charAt(i+1));
                 }
                 String connPom = pom + pom2;
-                
+
                 int pomIndex = findLetter(Rzymskie,connPom);
                 if(pomIndex!=-1){
                     liczba += Arabskie[pomIndex];
+                    i++;
                 }else{
                     int firstIndex = findLetter(Rzymskie,pom);
                     int secondIndex = findLetter(Rzymskie,pom2);
@@ -82,9 +83,9 @@ public class Test {
                         //System.out.println(Arabskie[secondIndex] + " " + Arabskie[firstIndex]);
                     }
                 }
-                
-                
-                
+
+
+
                 //liczba = liczba + liczbyA[valueIndex];
             }
             return liczba;
@@ -106,5 +107,5 @@ public class Test {
             super(message);
         }
     }
-    
+
 }
