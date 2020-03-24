@@ -1,11 +1,12 @@
 #include <iostream>
 #include <string>
 #include <exception>
+#include <cstdlib>
 using namespace std;
 
 int const ARRSIZE = 13;
 
-class ArabRzymException:exception{} ARE;
+class ArabRzymException{};
 class ArabRzym{
 public:
     static string Rzymskie[ARRSIZE];
@@ -76,20 +77,43 @@ int ArabRzym::rzym2arab (string rzym) throw (ArabRzymException) {
                     if(firstIndex>=secondIndex || secondIndex == -1){
                         liczba += ArabRzym::Arabskie[firstIndex];
                     }else{
-                        throw ARE;
+                        throw ArabRzymException();
                     }
                 }
             }
+
+            string pom2 = arab2rzym(liczba);
+            if(pom2!=rzym){
+                throw ArabRzymException();
+            }
             return liczba;
         }
+
+bool CzyLiczba(char *str){
+    while(*str){
+        if(!isdigit(str[0])){
+            return false;
+        }
+        str++;
+    }
+return true;
+}
+
 //MAIN
-int main(){
-    string n;
-    cin >> n;
-    try{
-        cout << ArabRzym::rzym2arab(n);
-    }catch(ArabRzymException* ex){
-        cout << "yy";
+int main(int argc, char *argv[]){
+    for(int i=1;i<argc;i++){
+        if(CzyLiczba(argv[i])){
+            cout << argv[i] << " - " << ArabRzym::arab2rzym(atoi(argv[i]));
+            cout << endl;
+        }else{
+            try{
+                cout << argv[i] << " - " << ArabRzym::rzym2arab(argv[i]);
+                cout << endl;
+            }catch(ArabRzymException ex){
+                cout << argv[i] << " - " << "Niepoprawny zabis rzymski";
+                cout << endl;
+            }
+        }
     }
     return 0;
 }
