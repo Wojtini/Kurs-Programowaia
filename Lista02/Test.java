@@ -61,7 +61,16 @@ public class Test {
             int liczba = 0;
             for(int i=0;i<rzym.length();i++){
                 String pom = Character.toString(rzym.charAt(i));
+                
                 String pom2 = "";
+                
+                for(int j=i+2;j<rzym.length();j++){
+                    pom2 = Character.toString(rzym.charAt(j));
+                    if(findLetter(Rzymskie,pom)<findLetter(Rzymskie,pom2)){
+                        throw new ArabRzymException("Niepoprawny zapis Arabski");
+                    }
+                }
+                
                 if(!(i+1==rzym.length())){
                     pom2 = Character.toString(rzym.charAt(i+1));
                 }
@@ -83,10 +92,10 @@ public class Test {
                         //System.out.println(Arabskie[secondIndex] + " " + Arabskie[firstIndex]);
                     }
                 }
-
-
-
-                //liczba = liczba + liczbyA[valueIndex];
+            }
+            String pom2 = arab2rzym(liczba);
+            if(!pom2.equals(rzym)){
+                throw new ArabRzymException("Niepoprawny zapis Arabski");
             }
             return liczba;
         }
