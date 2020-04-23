@@ -1,0 +1,6 @@
+PROJECT_NAME = 'BetterPaint'
+INPUT = ../BetterPaint.java
+OUTPUT_DIRECTORY = out
+GENERATE_HTML = YES
+HTML_OUTPUT = html/
+HTML_FILE_EXTENSION = .html
