@@ -1,4 +1,3 @@
-package wm.betterpaint;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
@@ -7,21 +6,14 @@ import java.awt.geom.*;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
  *
- * @author Wojciech Maziarz
+ * @author Wojtini
  */
 public class BetterPaint extends Frame {
     
     static Plotno MainPlotno;
-    static String option = "none";
-    static Point pressedPos;
-    static Point releasedPos;
-    static Shape[] allFigures = new Shape[50];
-    static Shape selectedFigure;
-    static int wasPressLMB = 0;
-    static int NumberOfActiveFigures=0;
-    static Color selectedColor = Color.WHITE;
     
     public BetterPaint() {
         initWindow();
@@ -116,9 +108,9 @@ public class BetterPaint extends Frame {
         @Override
         public void paint(Graphics g) {  
             Graphics2D g2 = (Graphics2D) g;
-            for(int i=0;i<NumberOfActiveFigures;i++){
-                Shape a = allFigures[i];
-                g2.setPaint(GetFigureColor(a));
+            for(int i=0;i<User.NumberOfActiveFigures;i++){
+                Shape a = User.allFigures[i];
+                g2.setPaint(User.GetFigureColor(a));
                 g2.fill(a);
             }
             
@@ -135,7 +127,7 @@ public class BetterPaint extends Frame {
             addActionListener(listener);
         }
         public void Pressed(){
-            option = ButtonTitle;
+            User.option = ButtonTitle;
             System.out.println(ButtonTitle);
         }
     }
@@ -164,19 +156,19 @@ public class BetterPaint extends Frame {
             int y = e.getY();
 
             if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-                if (selectedFigure!= null) {        
+                if (User.selectedFigure!= null) {        
                     int amount =  e.getWheelRotation() * 5;
                     try{
-                        Rectangle2 a = (Rectangle2) selectedFigure; 
+                        Rectangle2 a = (Rectangle2) User.selectedFigure; 
                         a.addHeight(amount);
                         a.addWidth(amount);        
                     }catch(Exception ex3){
                         try{
-                            Circle2 b = (Circle2) selectedFigure;
+                            Circle2 b = (Circle2) User.selectedFigure;
                             b.addHeight(amount);
                             b.addWidth(amount);
                         }catch(Exception ex4){
-                            Triangle2 c = (Triangle2) selectedFigure;
+                            Triangle2 c = (Triangle2) User.selectedFigure;
                             c.addHeight(amount);
                             c.addWidth(amount);
                         }
@@ -219,9 +211,9 @@ public class BetterPaint extends Frame {
             // Jesli nacisnelismy na prostokat
             //System.out.println(User.selectedFigure);
             
-            if (selectedFigure!=null && "none".equals(option)) {
+            if (User.selectedFigure!=null && "none".equals(User.option)) {
                 //System.out.println("Przesuwanko");
-                MoveFigure(selectedFigure,dx,dy);
+                MoveFigure(User.selectedFigure,dx,dy);
                 MainPlotno.repaint();
             }
 
@@ -256,33 +248,33 @@ public class BetterPaint extends Frame {
         }
         @Override
         public void mouseReleased(MouseEvent e){
-            if(wasPressLMB == 1){
-                wasPressLMB = 0;
+            if(User.wasPressLMB == 1){
+                User.wasPressLMB = 0;
                 int x = e.getX();
                 int y = e.getY();
 
-                releasedPos = new Point(x,y);
-                int startX = Math.min(x,pressedPos.x);
-                int startY = Math.min(y,pressedPos.y);
-                int lenX = Math.abs(pressedPos.x-x);
-                int lenY = Math.abs(pressedPos.y-y);
-                Draw(startX,startY,lenX,lenY);
+                User.releasedPos = new Point(x,y);
+                int startX = Math.min(x,User.pressedPos.x);
+                int startY = Math.min(y,User.pressedPos.y);
+                int lenX = Math.abs(User.pressedPos.x-x);
+                int lenY = Math.abs(User.pressedPos.y-y);
+                User.Draw(startX,startY,lenX,lenY);
                 MainPlotno.repaint();               
             }
         }
         @Override
         public void mousePressed(MouseEvent e){
             if( e.getModifiersEx()!=InputEvent.BUTTON3_DOWN_MASK){ //Jesli wcisniety zostal LPM
-                if("Select".equals(option)){
-                    Select(e.getX(), e.getY());
+                if(User.option == "Select"){
+                    User.Select(e.getX(), e.getY());
                 }
-                wasPressLMB = 1;
+                User.wasPressLMB = 1;
                 int x = e.getX();
                 int y = e.getY();
-                pressedPos = new Point(x,y);
+                User.pressedPos = new Point(x,y);
             }else{ //Prawy przycisk myszy
                 //System.out.println("right click");
-                if(selectedFigure != null){
+                if(User.selectedFigure != null){
                     ColorChooseMenu pom = new ColorChooseMenu();
                     MainPlotno.removeMouseListener(this);
                 }
@@ -292,33 +284,28 @@ public class BetterPaint extends Frame {
         public void mouseClicked(MouseEvent e){
         }
     }
-    public static void SetFigureColor(Shape shape,Color color){
-         try{
-            Circle2 b = (Circle2) shape;
-            b.color = color;
-        }catch(Exception ex1){
-            try{
-                Triangle2 k = (Triangle2) shape;
-                k.color = color;
-            }catch(Exception ex2){
-                Rectangle2 c = (Rectangle2) shape;
-                c.color = color;
-            }
-        }
-    }
-        public void Draw(int x,int y,int lenx,int leny){
+    static class User{
+        static String option = "none";
+        static Point pressedPos;
+        static Point releasedPos;
+        static Shape[] allFigures = new Shape[50];
+        static Shape selectedFigure;
+        static int wasPressLMB = 0;
+        static int NumberOfActiveFigures=0;
+        static Color selectedColor = Color.WHITE;
+        public static void Draw(int x,int y,int lenx,int leny){
             switch(option){
                 case "Rectangle":
                     Rectangle2 newFigure = new Rectangle2(x,y,lenx,leny);
-                    addFigure(newFigure);
+                    User.addFigure(newFigure);
                     break;
                 case "Triangle":
                     Triangle2 newTriangle = new Triangle2(x,y,lenx,leny);
-                    addFigure(newTriangle);
+                    User.addFigure(newTriangle);
                     break;
                 case "Circle":
                     Circle2 newCircle = new Circle2(x,y,lenx,leny);
-                    addFigure(newCircle);
+                    User.addFigure(newCircle);
                     break;
                 case "none":              
                     break;
@@ -340,19 +327,33 @@ public class BetterPaint extends Frame {
             allFigures[NumberOfActiveFigures] = s;
             NumberOfActiveFigures++;
         }
-        
-    public Color GetFigureColor(Shape shape){
-        try{
-            Circle2 b = (Circle2) shape;
-            return b.color;
-        }catch(Exception ex1){
+        public static void SetFigureColor(Shape shape,Color color){
             try{
-                Triangle2 k = (Triangle2) shape;
-                return k.color;
-            }catch(Exception ex2){
-                Rectangle2 c = (Rectangle2) shape;
-                return c.color;
+                Circle2 b = (Circle2) shape;
+                b.color = color;
+            }catch(Exception ex1){
+                try{
+                    Triangle2 k = (Triangle2) shape;
+                    k.color = color;
+                }catch(Exception ex2){
+                    Rectangle2 c = (Rectangle2) shape;
+                    c.color = color;
+                }
             }
+        }
+        public static Color GetFigureColor(Shape shape){
+            try{
+                    Circle2 b = (Circle2) shape;
+                    return b.color;
+                }catch(Exception ex1){
+                    try{
+                        Triangle2 k = (Triangle2) shape;
+                        return k.color;
+                    }catch(Exception ex2){
+                        Rectangle2 c = (Rectangle2) shape;
+                        return c.color;
+                    }
+                }
         }
     }
     class ColorChooseMenu extends Frame{
@@ -390,8 +391,8 @@ public class BetterPaint extends Frame {
                 int intB = Integer.parseInt(B.getText());
     //            for(int i=0;i<BetterPaint.User.NumberOfActiveFigures;i++){
                    //BetterPaint.User.allFigures[i]
-                   System.out.println(selectedFigure);
-                   SetFigureColor(selectedFigure, new Color(intR,intG,intB));
+                   System.out.println(User.selectedFigure);
+                   User.SetFigureColor(User.selectedFigure, new Color(intR,intG,intB));
     //            }
                 MainPlotno.repaint();
                 setVisible(false);
@@ -399,71 +400,70 @@ public class BetterPaint extends Frame {
             }
         }
     }
-    class Rectangle2 extends Rectangle2D.Float{
-        Color color = Color.WHITE;
-        public Rectangle2(int x, int y, int width, int height) {
-           setFrame(x, y, width, height);
-        }
-        public void addWidth(int w) {
-            this.width += w;
-        }
-        public void addHeight(int h) {     
-            this.height += h;
-        }
-        public void addX(int dx){
-            this.x += dx;
-        }
-        public void addY(int dy){
-            this.y += dy;
+}
+class Rectangle2 extends Rectangle2D.Float{
+    Color color = Color.WHITE;
+    public Rectangle2(int x, int y, int width, int height) {
+       setFrame(x, y, width, height);
+    }
+    public void addWidth(int w) {
+        this.width += w;
+    }
+    public void addHeight(int h) {     
+        this.height += h;
+    }
+    public void addX(int dx){
+        this.x += dx;
+    }
+    public void addY(int dy){
+        this.y += dy;
+    }
+}
+class Circle2 extends Ellipse2D.Float{
+    Color color = Color.WHITE;
+    public Circle2(int x, int y, int width, int height) {
+       setFrame(x, y, width, height);
+    }
+    public void addWidth(int w) {
+        this.width += w;
+    }
+    public void addHeight(int h) {     
+        this.height += h;
+    }
+    public void addX(int dx){
+        this.x += dx;
+    }
+    public void addY(int dy){
+        this.y += dy;
+    }
+}
+class Triangle2 extends Polygon{
+    Color color = Color.WHITE;
+    public Triangle2(int x, int y, int width, int height) {
+       addPoint(x,y);
+       addPoint(x+width,y+height);
+       addPoint(x+width,y);
+       
+    }
+    public void addWidth(int w) {
+        //this.width += w;
+        this.xpoints[1]+=w;
+        this.xpoints[2]+=w;
+        
+    }
+    public void addHeight(int h) {     
+        //this.height += h;
+        this.ypoints[1]+=h;
+        //this.ypoints[0]+=h;
+    }
+    public void addX(int dx){
+        for(int i=0;i<this.npoints;i++){
+            this.xpoints[i] += dx;
         }
     }
-    class Circle2 extends Ellipse2D.Float{
-        Color color = Color.WHITE;
-        public Circle2(int x, int y, int width, int height) {
-           setFrame(x, y, width, height);
-        }
-        public void addWidth(int w) {
-            this.width += w;
-        }
-        public void addHeight(int h) {     
-            this.height += h;
-        }
-        public void addX(int dx){
-            this.x += dx;
-        }
-        public void addY(int dy){
-            this.y += dy;
-        }
-    }
-
-    class Triangle2 extends Polygon{
-        Color color = Color.WHITE;
-        public Triangle2(int x, int y, int width, int height) {
-           addPoint(x,y);
-           addPoint(x+width,y+height);
-           addPoint(x+width,y);
-
-        }
-        public void addWidth(int w) {
-            //this.width += w;
-            this.xpoints[1]+=w;
-            this.xpoints[2]+=w;
-
-        }
-        public void addHeight(int h) {     
-            //this.height += h;
-            this.ypoints[1]+=h;
-            //this.ypoints[0]+=h;
-        }
-        public void addX(int dx){
-            for(int i=0;i<this.npoints;i++){
-                this.xpoints[i] += dx;
-            }
-        }
-        public void addY(int dy){
-            for(int i=0;i<this.npoints;i++){
-                this.ypoints[i] += dy;
-            }
+    public void addY(int dy){
+        for(int i=0;i<this.npoints;i++){
+            this.ypoints[i] += dy;
         }
     }
 }
