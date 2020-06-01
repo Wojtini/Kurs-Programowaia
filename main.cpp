@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <string.h>
+#include <limits>
 using namespace std;
 
 template<typename T> class Node{
@@ -13,13 +14,6 @@ public:
         this->value = value;
     }
     ~Node(){
-//        if(this->parent != NULL) {
-//            if (this->parent->leftChild == this) {
-//                this->parent->leftChild = NULL;
-//            } else if(this->parent->rightChild == this) {
-//                this->parent->rightChild = NULL;
-//            }
-//        }
         cout << "Deleted node with value: " << this->value << endl;
     }
     Node<T>* Search(T searchValue){
@@ -105,9 +99,10 @@ public:
             }
             delete pom;
         }else{
-            
+            T min = pom->rightChild->minimumValue();
+            pom->value = min;
+            pom->rightChild->Delete(min);
         }
-//        pom->value = pom->rightChild->minimumValue();
     }
     T minimumValue(){
         if(this->leftChild==NULL){
@@ -116,32 +111,181 @@ public:
             return this->leftChild->minimumValue();
         }
     }
+    void Show(){
+        if(this->leftChild != NULL){
+            this->leftChild->Show();
+        }
+        cout << this->value << " ";
+        if(this->rightChild != NULL){
+            this->rightChild->Show();
+        }
+    }
 };
-
-int main() {
-    cout << "Wpisz wartosc korzenia";
-    int rootValue;
-    cin >> rootValue;
-    Node<int> rootInt(rootValue);
+//useful funkcje
+int isInt(char a[])
+{
+    int len=strlen(a);
+    int sum=0;
+    for(int i=0;i<len;i++)
+    {
+        if(isdigit(a[i])!=0)
+            sum++;
+        else if(a[i]=='-')
+            sum++;
+    }
+    if(sum==len)
+        return 1;
+    else
+        return 0;
+}
+int isFloat(char a[])
+{
+    int len=strlen(a);
+    int sum=0;
+    for(int i=0;i<len;i++)
+    {
+        if(isdigit(a[i])!=0)
+        {
+            sum++;
+        }
+        else if(a[i]=='.')
+        {
+            sum++;
+        }
+        else if(a[i]=='-')
+        {
+            sum++;
+        }
+    }
+    if(sum==len)
+        return 1;
+    else
+        return 0;
+}
+//Interfejs uzytkownika input
+int getInt(){
+    int x;
+    cout << "Wpisz wartosc typu INT: ";
+    cin >> x;
+    while(cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        cout << "Zly typ danych.  Sproboj panownie: ";
+        cin >> x;
+    }
+    return x;
+}
+float getFloat(){
+    float x;
+    cout << "Wpisz wartosc typu FLOAT: ";
+    cin >> x;
+    while(cin.fail()) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
+        cout << "Zly typ danych.  Sproboj panownie: ";
+        cin >> x;
+    }
+    return x;
+}
+//Interfejs uzytkownika
+void intTreeManager(int rootValue){
     string userInput;
+    Node<int> root(rootValue);
     do{
-        cout << "wykonaj operacje INSERT/SEARCH/DELETE";
+        int givenValue;
+        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT";
         cin >> userInput;
         if(userInput == "INSERT"){
+            givenValue = getInt();
+            if(!root.Search(givenValue)){
+                root.Insert(givenValue);
+            }else{
+                cout << "Podana wartosc juz sie znajduje w drzewie" << endl;
+            }
+        }
+        if(userInput == "SEARCH"){
+            givenValue = getInt();
+            if(root.Search(givenValue) != NULL){
+                cout << "Podana wartosc znajduje sie w drzewie" << endl;
+            }else{
+                cout << "Podana wartosc NIE znajduje sie w drzewie" << endl;
+            }
+        }
+        if(userInput == "DELETE"){
+            givenValue = getInt();
+            if(root.Search(givenValue)==NULL){
+                cout << "Nie ma takiej wartosci" << endl;
+            }else{
+                root.Delete(givenValue);
+                cout << "Usunieto element" << endl;
+            }
+        }
+        if(userInput == "SHOW"){
+            cout << "Inorder: ";
+            root.Show();
+            cout << endl;
+        }
+    }while(userInput != "EXIT");
+}
+void floatTreeManager(float rootValue){
+    string userInput;
+    Node<float> root(rootValue);
+    do{
+        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT";
+        cin >> userInput;
+        float givenValue;
+        if(userInput == "INSERT"){
+            givenValue = getFloat();
+            if(!root.Search(givenValue)){
+                root.Insert(givenValue);
+            }else{
+                cout << "Podana wartosc juz sie znajduje w drzewie" << endl;
+            }
+        }
+        if(userInput == "SEARCH"){
+            givenValue = getFloat();
+            if(root.Search(givenValue) != NULL){
+                cout << "Podana wartosc znajduje sie w drzewie" << endl;
+            }else{
+                cout << "Podana wartosc NIE znajduje sie w drzewie" << endl;
+            }
+        }
+        if(userInput == "DELETE"){
+            givenValue = getFloat();
+            if(root.Search(givenValue)==NULL){
+                cout << "Nie ma takiej wartosci" << endl;
+            }else{
+                root.Delete(givenValue);
+                cout << "Usunieto element" << endl;
+            }
+        }
+        if(userInput == "SHOW"){
+            cout << "Inorder: ";
+            root.Show();
+            cout << endl;
+        }
+    }while(userInput != "EXIT");
+}
+void stringTreeManager(string rootValue){
+    string userInput;
+    Node<string> root(rootValue);
+    do{
+        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT";
+        cin >> userInput;
+        string givenValue;
+        if(userInput == "INSERT"){
             cout << "Wpisz wartosc: ";
-            int givenValue;
             cin >> givenValue;
-            if(!rootInt.Search(givenValue)){
-                rootInt.Insert(givenValue);
+            if(!root.Search(givenValue)){
+                root.Insert(givenValue);
             }else{
                 cout << "Podana wartosc juz sie znajduje w drzewie" << endl;
             }
         }
         if(userInput == "SEARCH"){
             cout << "Wpisz wartosc: ";
-            int givenValue;
             cin >> givenValue;
-            if(rootInt.Search(givenValue) != NULL){
+            if(root.Search(givenValue) != NULL){
                 cout << "Podana wartosc znajduje sie w drzewie" << endl;
             }else{
                 cout << "Podana wartosc NIE znajduje sie w drzewie" << endl;
@@ -149,10 +293,42 @@ int main() {
         }
         if(userInput == "DELETE"){
             cout << "Wpisz wartosc: ";
-            int givenValue;
             cin >> givenValue;
-            rootInt.Delete(givenValue);
+            if(root.Search(givenValue)==NULL){
+                cout << "Nie ma takiej wartosci" << endl;
+            }else{
+                root.Delete(givenValue);
+                cout << "Usunieto element" << endl;
+            }
+        }
+        if(userInput == "SHOW"){
+            cout << "Inorder: ";
+            root.Show();
+            cout << endl;
         }
     }while(userInput != "EXIT");
+}
+//Main function
+int main() {
+    cout << "Wpisz wartosc korzenia";
+    string userRootInput;
+    cin >> userRootInput;
+    //konwertowanie stringa do chara
+    int strLen = userRootInput.length();
+    char charArray[strLen + 1];
+    strcpy(charArray, userRootInput.c_str());
+    //kolejne przypadki
+    if(isInt(charArray)){
+        cout << "Rozpoznano typ INT" << endl;
+        intTreeManager(stoi(userRootInput));
+    }else if(isFloat(charArray)){
+        cout << "Rozpoznano typ FLOAT" << endl;
+        floatTreeManager(stof(userRootInput));
+    }else{
+        cout << "Rozpoznano typ STRING" << endl;
+        stringTreeManager(userRootInput);
+    }
+
     return 0;
 }
+
