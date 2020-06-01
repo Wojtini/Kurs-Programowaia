@@ -10,48 +10,48 @@ public:
     Node<T> *leftChild = NULL;
     Node<T> *rightChild = NULL;
     Node(T value){
-        cout << "Created node with value: " << value << endl;
+//        cout << "Created node with value: " << value << endl;
         this->value = value;
     }
     ~Node(){
-        cout << "Deleted node with value: " << this->value << endl;
+//        cout << "Deleted node with value: " << this->value << endl;
     }
     Node<T>* Search(T searchValue){
-        cout << "Porownywane wartosci: " << searchValue << " i " << this->value << endl;
+//        cout << "Porownywane wartosci: " << searchValue << " i " << this->value << endl;
         if(searchValue == this->value){
-            cout << "Znaleziony" << endl;
+//            cout << "Znaleziony" << endl;
             return this;
         }
         else if(searchValue > this->value){
             if(this->rightChild == nullptr){
-                cout << "BRAK prawego dziecku" << endl;
+//                cout << "BRAK prawego dziecku" << endl;
                 return NULL;
             }else{
-                cout << "Szukam w prawym dziecku: DZIECKO: " << this->rightChild->value << endl;
+//                cout << "Szukam w prawym dziecku: DZIECKO: " << this->rightChild->value << endl;
                 return this->rightChild->Search(searchValue);
             }
         }
         else{
             if(this->leftChild == nullptr){
-                cout << "BRAK lewego dzieca" << endl;
+//                cout << "BRAK lewego dzieca" << endl;
                 return NULL;
             }else{
-                cout << "Szukam w lewym dziecku: DZIECKO" << this->leftChild->value  << endl;
+//                cout << "Szukam w lewym dziecku: DZIECKO" << this->leftChild->value  << endl;
                 return this->leftChild->Search(searchValue);
             }
         }
     }
     void Insert(T insertValue){
-        cout << "INSERT: porownoje: " << insertValue << " i " << this->value << endl;
+//        cout << "INSERT: porownoje: " << insertValue << " i " << this->value << endl;
         if(insertValue > this->value){
             if(this->rightChild == NULL){
                 Node<T> *newNode = new Node<T>(insertValue);
                 newNode->parent = this;
                 this->rightChild = newNode;
                 cout << this->rightChild->value << endl;
-                cout << "Wrzucone do lewego dziecka: " << insertValue << endl;
+//                cout << "Wrzucone do lewego dziecka: " << insertValue << endl;
             }else{
-                cout << "Proboje wrzucic w prawym dziecku" << endl;
+//                cout << "Proboje wrzucic w prawym dziecku" << endl;
                 this->rightChild->Insert(insertValue);
             }
         }
@@ -61,9 +61,9 @@ public:
                 newNode->parent = this;
                 this->leftChild = newNode;
                 cout << this->leftChild->value << endl;
-                cout << "Wrzucone do lewego dziecka: " << insertValue << endl;
+//                cout << "Wrzucone do lewego dziecka: " << insertValue << endl;
             }else{
-                cout << "Proboje wrzucic w lewym dziecku" << endl;
+//                cout << "Proboje wrzucic w lewym dziecku" << endl;
                 this->leftChild->Insert(insertValue);
             }
         }
@@ -193,7 +193,7 @@ void intTreeManager(int rootValue){
     Node<int> root(rootValue);
     do{
         int givenValue;
-        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT";
+        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT" << endl;
         cin >> userInput;
         if(userInput == "INSERT"){
             givenValue = getInt();
@@ -231,7 +231,7 @@ void floatTreeManager(float rootValue){
     string userInput;
     Node<float> root(rootValue);
     do{
-        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT";
+        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT" << endl;
         cin >> userInput;
         float givenValue;
         if(userInput == "INSERT"){
@@ -270,7 +270,7 @@ void stringTreeManager(string rootValue){
     string userInput;
     Node<string> root(rootValue);
     do{
-        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT";
+        cout << "wykonaj operacje INSERT/SEARCH/DELETE/SHOW/EXIT" << endl;
         cin >> userInput;
         string givenValue;
         if(userInput == "INSERT"){
